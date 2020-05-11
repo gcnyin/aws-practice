@@ -1,0 +1,44 @@
+version: '3'
+services:
+  todo-page:
+    build: ./todo-page
+    container_name: todo-page
+    ports:
+      - 8080:80
+    networks:
+      - api
+  todo-api:
+    build: ./todo-api
+    container_name: todo-api
+    environment:
+      - DB_SERVER=todo-db
+      - POSTGRES_DB=todoapp
+      - POSTGRES_USER=todoapp
+      - POSTGRES_PASSWORD=todoapp
+      - REDIS_HOST=todo-redis
+    networks:
+      - api
+      - db
+      - redis
+  todo-db:
+    image: postgres:10.11-alpine
+    container_name: todo-db
+    environment:
+      - POSTGRES_DB=todoapp
+      - POSTGRES_USER=todoapp
+      - POSTGRES_PASSWORD=todoapp
+    networks:
+      - db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  todo-redis:
+    image: redis:5.0.9-alpine
+    container_name: todo-redis
+    networks:
+      - redis 
+networks:
+  api:
+  db:
+  redis:
+volumes:
+  pgdata:

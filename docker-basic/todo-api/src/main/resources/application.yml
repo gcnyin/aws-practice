@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_SERVER}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  cache:
+    type: redis
+    cache-names: cache1,cache2
+    redis:
+      time-to-live: 30000
+  redis:
+    host: ${REDIS_HOST}

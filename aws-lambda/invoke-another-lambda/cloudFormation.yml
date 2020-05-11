@@ -1,0 +1,32 @@
+Resources:
+  CalleeLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: hzhuang-callee-c
+      Description: Lambda Function of nodejs12.x.
+      Runtime: nodejs12.x
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          exports.handler = function(event, context) {
+            return "Mock Data"
+          };
+      Role: arn:aws:iam::494526681395:role/for-aws-training
+  InvokeLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: hzhuang-invoke-another-c
+      Description: read s3 bucket
+      Runtime: nodejs12.x
+      Handler: index.handler
+      Code:
+        S3Bucket: aws-training-hzhuang
+        S3Key: invoke-lambda.zip
+      Role: arn:aws:iam::494526681395:role/for-aws-training
+Outputs:
+  CalleeLambdaFunctionName:
+    Value:
+      Ref: CalleeLambdaFunction
+  InvokeLambdaFunctionName:
+    Value:
+      Ref: InvokeLambdaFunction
