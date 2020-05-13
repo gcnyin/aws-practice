@@ -1,0 +1,5 @@
+The ASCII character set defines 128 characters (0 to 127 decimal, 0 to 7F hexadecimal, and 0 to 177 octal).
+This character set is a subset of many other character sets with 256 characters,
+including the ANSI character set of MS Windows, the Roman-8 character set of HP systems,
+and the IBM PC Extended Character Set of DOS, and the ISO Latin-1 character set used by Web browsers.
+They are not the same as the EBCDIC character set used on IBM mainframes.
