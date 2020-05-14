@@ -1,5 +1,7 @@
 # KMS
 
+# Basic
+
 ## Task 1 - Use aws-cli to create a key
 
 ```bash
@@ -36,7 +38,7 @@ $ aws kms encrypt \
 --key-id aa5b2dc0-88ba-4e21-b339-82d8a18e9e6b \
 --plaintext fileb://plain.txt \
 --output text \
---query CiphertextBlob | base64 \         
+--query CiphertextBlob | base64 \
 --decode > ExampleEncryptedFile
 ```
 
@@ -48,3 +50,16 @@ $ aws kms decrypt \
 --output text \
 --query Plaintext | base64 --decode > ExamplePlaintextFile
 ```
+
+## Task 4 - Use open source tool shush to do the above action
+
+TODO
+
+# Nice to Have
+
+## Task 1 - audit use of a key using AWS CloudTrail
+
+```bash
+aws cloudtrail lookup-events --max-items 100 --lookup-attributes AttributeKey=EventSource,AttributeValue=kms.amazonaws.com > kms.json
+```
+
