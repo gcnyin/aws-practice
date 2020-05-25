@@ -7,6 +7,8 @@ services:
       - 8080:80
     networks:
       - api
+    depends_on:
+      - todo-api
   todo-api:
     build: ./todo-api
     container_name: todo-api
@@ -20,6 +22,9 @@ services:
       - api
       - db
       - redis
+    depends_on:
+      - todo-db
+      - todo-redis
   todo-db:
     image: postgres:10.11-alpine
     container_name: todo-db
