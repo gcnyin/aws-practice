@@ -53,7 +53,13 @@ $ aws kms decrypt \
 
 ## Task 4 - Use open source tool shush to do the above action
 
-TODO
+```bash
+export AWS_DEFAULT_REGION=ap-southeast-1; ./shush_darwin_amd64 encrypt hzhuang-key 'Hello, world' > secret.encrypted
+```
+
+```bash
+./shush_darwin_amd64 decrypt < secret.encrypted > secret.txt
+```
 
 # Nice to Have
 
