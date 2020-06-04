@@ -69,3 +69,8 @@ export AWS_DEFAULT_REGION=ap-southeast-1; ./shush_darwin_amd64 encrypt hzhuang-k
 aws cloudtrail lookup-events --max-items 100 --lookup-attributes AttributeKey=EventSource,AttributeValue=kms.amazonaws.com > kms.json
 ```
 
+## Create Alias
+
+```bash
+aws kms create-alias --alias-name hzhaung-key aa5b2dc0-88ba-4e21-b339-82d8a18e9e6b
+```
