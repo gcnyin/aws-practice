@@ -74,3 +74,9 @@ aws cloudtrail lookup-events --max-items 100 --lookup-attributes AttributeKey=Ev
 ```bash
 aws kms create-alias --alias-name hzhaung-key aa5b2dc0-88ba-4e21-b339-82d8a18e9e6b
 ```
+
+## S3
+
+```bash
+aws s3 cp s3://aws-training-hzhuang/jdk s3://aws-training-hzhuang-resized/jdk --recursive --sse aws:kms --sse-kms-key-id aa5b2dc0-88ba-4e21-b339-82d8a18e9e6b
+```
