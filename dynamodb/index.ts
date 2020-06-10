@@ -12,6 +12,9 @@ const createItem = (order: number) => {
             "projectType": {
                 S: "normal"
             },
+            "memberName": {
+                S: `fake_name${order}`
+            },
             "fee": {
                 N: `1000${order}`
             },
@@ -21,7 +24,7 @@ const createItem = (order: number) => {
             "binary_info": {
                 B: "xxx"
             },
-            "date": {
+            "startDate": {
                 S: new Date().toISOString()
             },
             "fake_names": {
