@@ -45,3 +45,21 @@ dynamodb.putItem(createItem(2)).promise()
 dynamodb.putItem(createItem(3)).promise()
 dynamodb.putItem(createItem(4)).promise()
 dynamodb.putItem(createItem(5)).promise()
+
+// dynamodb.transactWriteItems({
+//     TransactItems: [
+//         {
+//             Delete: {
+//                 TableName: 'Project_hzhuang',
+//                 Key: {
+//                     projectName: {
+//                         S: `projectName1`
+//                     },
+//                     projectType: {
+//                         S: "normal"
+//                     },
+//                 }
+//             }
+//         }
+//     ]
+// })
