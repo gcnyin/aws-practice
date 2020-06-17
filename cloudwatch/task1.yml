@@ -1,0 +1,95 @@
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: hzhuang-send-metrics
+      Description: send metrics
+      Runtime: nodejs12.x
+      Handler: index.handler
+      Code:
+        ZipFile: |
+          const AWS = require('aws-sdk');
+          const cloudwatch = new AWS.CloudWatch({region: 'ap-southeast-1'});
+
+          exports.handler = function(event) {
+            const metric = {
+              MetricData: [
+                {
+                  MetricName: 'active-count',
+                  Dimensions: [
+                    {
+                      Name: 'URL',
+                      Value: 'https://www.baidu.com'
+                    }
+                  ],
+                  Timestamp: new Date(),
+                  Unit: 'Count',
+                  Value: Math.floor(Math.random() * 1000)
+                }
+              ],
+              Namespace: 'hzhuang'
+            };
+
+            cloudwatch.putMetricData(metric, (err, data) => {
+              if (err) {
+                  console.error(err);
+                } else {
+                  console.log(data);
+              }
+            });
+            console.log(JSON.stringify(event, null, 2))
+            return "Done"
+          };
+      Role: arn:aws:iam::494526681395:role/for-aws-training
+  ScheduledRule:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: "ScheduledRule"
+      ScheduleExpression: "rate(1 minute)"
+      State: "ENABLED"
+      Name: "hzhuang-send-metric-scheduler"
+      Targets:
+        - 
+          Arn: 
+            Fn::GetAtt: 
+              - "LambdaFunction"
+              - "Arn"
+          Id: "c5d49e40-345b-4bd8-8bf9-fc242cea65b8"
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: "LambdaFunction"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: 
+        Fn::GetAtt: 
+          - "ScheduledRule"
+          - "Arn"
+  AlarmSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: "hzhuang@thoughtworks.com"
+          Protocol: email
+  MetricsAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: hzhuangMetricsAlert
+      MetricName: active-count
+      Namespace: hzhuang
+      Statistic: Maximum
+      Period: "10"
+      EvaluationPeriods: "1"
+      Threshold: "100"
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: "URL"
+          Value: "https://www.baidu.com"
+      AlarmActions:
+        - Ref: AlarmSNSTopic
+      TreatMissingData: notBreaching
+Outputs:
+  LambdaFunctionName:
+    Value:
+      Ref: LambdaFunction
