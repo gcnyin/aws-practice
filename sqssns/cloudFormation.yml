@@ -1,0 +1,48 @@
+Resources:
+  MyTopic:
+    Type: AWS::SQS::Topic
+    Properties:
+      TopicName: hzhuang-topic
+      Subscription:
+        - Endpoint: !GetAtt MyQueue.Arm
+          Protocol: "sqs"
+  MyQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: hzhuang-queue
+      RedrivePolicy: 
+        deadLetterTargetArn: !GetAtt MyDeadLetterQueue.Arn
+        maxReceiveCount: 2
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 604800
+  PermissionForEventsToInvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: "LambdaFunction"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt MyQueue.Arn
+  MyDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: hzhuang-dead-letter-queue
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: nodejs12.x
+      FunctionName: hzhuang-lambda
+      Handler: index.handler
+      Role: arn:aws:iam::494526681395:role/for-aws-training
+      Code:
+        ZipFile: |
+          exports.handler = (event) => {
+            console.log(JSON.stringify(event));
+          }
+  LambdaFunctionEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10
+      Enabled: true
+      EventSourceArn: !GetAtt MyQueue.Arn
+      FunctionName: !GetAtt LambdaFunction.Arn
