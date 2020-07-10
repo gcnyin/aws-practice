@@ -1,4 +1,12 @@
 Resources:
+  SNSTrigger:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: The rule use to trigger sns
+      ScheduleExpression: rate(5 minutes)
+      Targets:
+        - Arn: !Ref MyTopic
+          Id: sns-trigger
   MyTopic:
     Type: AWS::SQS::Topic
     Properties:
@@ -6,6 +14,11 @@ Resources:
       Subscription:
         - Endpoint: !GetAtt MyQueue.Arm
           Protocol: "sqs"
+        - Endpoint: hzhuang@thoughtworks.com
+          Protocol: email
+      Tags:
+        - Key: creator
+          Value: hzhuang
   MyQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -15,6 +28,9 @@ Resources:
         maxReceiveCount: 2
       VisibilityTimeout: 300
       MessageRetentionPeriod: 604800
+      Tags:
+        - Key: creator
+          Value: hzhuang
   PermissionForEventsToInvokeLambda:
     Type: AWS::Lambda::Permission
     Properties: 
@@ -27,6 +43,9 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: hzhuang-dead-letter-queue
+      Tags:
+        - Key: creator
+          Value: hzhuang
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -39,6 +58,9 @@ Resources:
           exports.handler = (event) => {
             console.log(JSON.stringify(event));
           }
+      Tags:
+        - Key: creator
+          Value: hzhuang
   LambdaFunctionEventSourceMapping:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
