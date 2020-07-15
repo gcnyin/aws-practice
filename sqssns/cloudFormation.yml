@@ -1,70 +1,44 @@
+Parameters:
+  LambdaFunctionName:
+    Description: Lambda Function Name
+    Default: hzhuang-event-lambda
+    Type: String
+  SNSTopicName:
+    Default: auto-triggered-topic
+    Type: String
+
 Resources:
-  SNSTrigger:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Handler: index.lambda_handler
+      Role: arn:aws:iam::494526681395:role/aws-training
+      Code: 
+        ZipFile: |
+          def lambda_handler(event, handler):
+            print(event)
+      Runtime: "python3.7"
+  SQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 604800
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: AutoTrigger
+      Subscription:
+        - Endpoint: !GetAtt SQSQueue.Arn
+          Protocol: sqs
+        - Endpoint: hzhuang@thoughtworks.com
+          Protocol: email
+      TopicName: !Ref SNSTopicName
+  TriggerSNSEvent:
     Type: AWS::Events::Rule
     Properties:
       Description: The rule use to trigger sns
       ScheduleExpression: rate(5 minutes)
       Targets:
-        - Arn: !Ref MyTopic
-          Id: sns-trigger
-  MyTopic:
-    Type: AWS::SQS::Topic
-    Properties:
-      TopicName: hzhuang-topic
-      Subscription:
-        - Endpoint: !GetAtt MyQueue.Arm
-          Protocol: "sqs"
-        - Endpoint: hzhuang@thoughtworks.com
-          Protocol: email
-      Tags:
-        - Key: creator
-          Value: hzhuang
-  MyQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: hzhuang-queue
-      RedrivePolicy: 
-        deadLetterTargetArn: !GetAtt MyDeadLetterQueue.Arn
-        maxReceiveCount: 2
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 604800
-      Tags:
-        - Key: creator
-          Value: hzhuang
-  PermissionForEventsToInvokeLambda:
-    Type: AWS::Lambda::Permission
-    Properties: 
-      FunctionName: 
-        Ref: "LambdaFunction"
-      Action: "lambda:InvokeFunction"
-      Principal: "events.amazonaws.com"
-      SourceArn: !GetAtt MyQueue.Arn
-  MyDeadLetterQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: hzhuang-dead-letter-queue
-      Tags:
-        - Key: creator
-          Value: hzhuang
-  LambdaFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      Runtime: nodejs12.x
-      FunctionName: hzhuang-lambda
-      Handler: index.handler
-      Role: arn:aws:iam::494526681395:role/for-aws-training
-      Code:
-        ZipFile: |
-          exports.handler = (event) => {
-            console.log(JSON.stringify(event));
-          }
-      Tags:
-        - Key: creator
-          Value: hzhuang
-  LambdaFunctionEventSourceMapping:
-    Type: AWS::Lambda::EventSourceMapping
-    Properties:
-      BatchSize: 10
-      Enabled: true
-      EventSourceArn: !GetAtt MyQueue.Arn
-      FunctionName: !GetAtt LambdaFunction.Arn
+        - Arn: !Ref SNSTopic
+          Id: trigger-sns
