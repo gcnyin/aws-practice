@@ -38,7 +38,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Description: The rule use to trigger sns
-      ScheduleExpression: rate(5 minutes)
+      ScheduleExpression: rate(2 minutes)
       Targets:
         - Arn: !Ref SNSTopic
           Id: trigger-sns
