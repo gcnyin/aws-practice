@@ -1,44 +1,17 @@
-Parameters:
-  LambdaFunctionName:
-    Description: Lambda Function Name
-    Default: hzhuang-event-lambda
-    Type: String
-  SNSTopicName:
-    Default: auto-triggered-topic
-    Type: String
-
 Resources:
-  LambdaFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      FunctionName: !Ref LambdaFunctionName
-      Handler: index.lambda_handler
-      Role: arn:aws:iam::494526681395:role/aws-training
-      Code: 
-        ZipFile: |
-          def lambda_handler(event, handler):
-            print(event)
-      Runtime: "python3.7"
-  SQSQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 604800
   SNSTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: AutoTrigger
+      DisplayName: hzhuang-topic
+      TopicName: hzhuang-topic
       Subscription:
-        - Endpoint: !GetAtt SQSQueue.Arn
-          Protocol: sqs
         - Endpoint: hzhuang@thoughtworks.com
           Protocol: email
-      TopicName: !Ref SNSTopicName
   TriggerSNSEvent:
     Type: AWS::Events::Rule
     Properties:
       Description: The rule use to trigger sns
-      ScheduleExpression: rate(2 minutes)
+      ScheduleExpression: rate(1 minute)
       Targets:
         - Arn: !Ref SNSTopic
           Id: trigger-sns

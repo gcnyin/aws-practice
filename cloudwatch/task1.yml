@@ -40,7 +40,7 @@ Resources:
             console.log(JSON.stringify(event, null, 2))
             return "Done"
           };
-      Role: arn:aws:iam::494526681395:role/for-aws-training
+      Role: arn:aws:iam::494526681395:role/hzhuang-aws-training-role
   ScheduledRule:
     Type: AWS::Events::Rule
     Properties: 
@@ -69,6 +69,7 @@ Resources:
   AlarmSNSTopic:
     Type: AWS::SNS::Topic
     Properties:
+      TopicName: hzhuang-topic
       Subscription:
         - Endpoint: "hzhuang@thoughtworks.com"
           Protocol: email
