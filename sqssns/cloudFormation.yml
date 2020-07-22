@@ -1,4 +1,8 @@
 Resources:
+  MySQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: "hhz-queue"
   SNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -7,6 +11,8 @@ Resources:
       Subscription:
         - Endpoint: hzhuang@thoughtworks.com
           Protocol: email
+        - Endpoint: !GetAtt MySQS.Arn
+          Protocol: sqs
   TriggerSNSEvent:
     Type: AWS::Events::Rule
     Properties:
