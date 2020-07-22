@@ -20,3 +20,9 @@ Amazon Simple Queue Service (SQS) is a fully managed message queuing service tha
 - [x] SQS要有DLQ / encryption
 - [x] tagging
 - [x] As Code: CFN
+
+## 遇到的问题
+
+cloudWatch Event无法trigger SNS Topic
+
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/CWE_Troubleshooting.html#NoMessagesPublishedSNS
