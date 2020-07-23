@@ -1,8 +1,13 @@
 Resources:
+  MyDeadLetterQueue: 
+    Type: AWS::SQS::Queue
   MySQS:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: "hhz-queue"
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt MyDeadLetterQueue.Arn
+        maxReceiveCount: 5
   SNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -21,3 +26,25 @@ Resources:
       Targets:
         - Arn: !Ref SNSTopic
           Id: trigger-sns
+
+Outputs: 
+  MyQueueURL: 
+    Description: "URL of source queue"
+    Value: 
+      Ref: "MySQS"
+  MyQueueARN: 
+    Description: "ARN of source queue"
+    Value: 
+      Fn::GetAtt:
+        - "MySQS"
+        - "Arn"
+  DeadLetterQueueURL: 
+    Description: "URL of dead-letter queue"
+    Value: 
+      Ref: "MyDeadLetterQueue"
+  DeadLetterQueueARN: 
+    Description: "ARN of dead-letter queue"
+    Value: 
+      Fn::GetAtt: 
+        - "MyDeadLetterQueue"
+        - "Arn"
