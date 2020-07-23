@@ -10,16 +10,16 @@ Amazon Simple Queue Service (SQS) is a fully managed message queuing service tha
 
 ## Tasks
 
-- [x] 每 5 mins 自动触发SNS的Topic
-- [x] SNS 自动发送邮件，邮件内容包含所有 event 的内容
-- [x] SNS 向订阅的 SQS中发送消息
-- [x] SQS要有retention(7days) / timeout(5mins)
-- [x] SQS自动触发Lambda运行，Lambda将event的所有内容输出到CloudWatch log中
+- [ ] 每 5 mins 自动触发SNS的Topic
+- [ ] SNS 自动发送邮件，邮件内容包含所有 event 的内容
+- [ ] SNS 向订阅的 SQS中发送消息
+- [ ] SQS要有retention(7days) / timeout(5mins)
+- [ ] SQS自动触发Lambda运行，Lambda将event的所有内容输出到CloudWatch log中
 - [ ] SNS要有 logging / encryption / retry / permission
 - [ ] Email Subscription 要有 DLQ
-- [x] SQS要有DLQ / encryption
-- [x] tagging
-- [x] As Code: CFN
+- [ ] SQS要有DLQ / encryption
+- [ ] tagging
+- [ ] As Code: CFN
 
 ## 遇到的问题
 

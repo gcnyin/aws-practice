@@ -26,6 +26,24 @@ Resources:
       Targets:
         - Arn: !Ref SNSTopic
           Id: trigger-sns
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues: 
+        - !Ref MySQS
+      PolicyDocument:
+        Statement:
+          -
+            Action:
+              - "SQS:SendMessage" 
+              - "SQS:ReceiveMessage"
+            Effect: Allow
+            Principal: "*"
+            Sid: allow-sns-messages
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref SNSTopic
+
 
 Outputs: 
   MyQueueURL: 
@@ -48,3 +66,6 @@ Outputs:
       Fn::GetAtt: 
         - "MyDeadLetterQueue"
         - "Arn"
+  TopicRef:
+    Description: "Ref of SNSTopic"
+    Value: !Ref SNSTopic
