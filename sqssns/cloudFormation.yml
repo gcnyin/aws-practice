@@ -37,6 +37,7 @@ Resources:
             Action:
               - "SQS:SendMessage" 
               - "SQS:ReceiveMessage"
+            Resource: !GetAtt MySQS.Arn
             Effect: Allow
             Principal: "*"
             Sid: allow-sns-messages
