@@ -1,3 +1,8 @@
+Parameters:
+  AlarmSNSTopicName:
+    Type: String
+    Default: SNSAlarm
+
 Resources:
   MyDeadLetterQueue: 
     Type: AWS::SQS::Queue
@@ -68,6 +73,32 @@ Resources:
     Properties:
       EventSourceArn: !GetAtt MySQS.Arn
       FunctionName: !Ref MyFunction
+  AlarmSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: hzhuang@thoughtworks.com
+          Protocol: email
+      TopicName: !Ref AlarmSNSTopicName
+
+  SNSAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: SNS failed
+      AlarmName: !Ref AlarmSNSTopicName
+      AlarmActions:
+        - !Ref AlarmSNSTopic
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 1
+      Statistic: Average
+      MetricName: NumberOfNotificationsFailed
+      Namespace: SNS
+      Period: 300
+      Dimensions:
+        - Name: TopicName
+          Value: hzhuang-topic
+
 Outputs: 
   MyQueueURL: 
     Description: "URL of source queue"
