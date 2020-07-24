@@ -21,8 +21,6 @@ Resources:
       DisplayName: hzhuang-topic
       TopicName: hzhuang-topic
       Subscription:
-        - Endpoint: hzhuang@thoughtworks.com
-          Protocol: email
         - Endpoint: !GetAtt MySQS.Arn
           Protocol: sqs
   TriggerSNSEvent:
@@ -98,6 +96,16 @@ Resources:
       Dimensions:
         - Name: TopicName
           Value: hzhuang-topic
+  SnsEmailDeadLetterQueue: 
+    Type: AWS::SQS::Queue
+  SNSEmailDeadLetterQueue:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      Endpoint: hzhuang@thoughtworks.com
+      TopicArn: !Ref SNSTopic
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SnsEmailDeadLetterQueue.Arn
 
 Outputs: 
   MyQueueURL: 
